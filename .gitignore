@@ -20,7 +20,6 @@ npm-debug.log*
 .versions/
 coverage/
 www/
-node_modules/
 tmp/
 temp/
 platforms/
@@ -32,7 +31,6 @@ $RECYCLE.BIN/
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
-node_modules
 venv/
 
 # Elastic Beanstalk Files
