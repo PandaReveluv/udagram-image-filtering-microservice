@@ -8,7 +8,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   const app = express();
 
   // Set the network port
-  const port = process.env.PORT || 8082;
+  const port = process.env.PORT || 8080;
   
   // Use the body parser middleware for post requests
   app.use(bodyParser.json());
@@ -53,6 +53,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
       await deleteLocalFiles(to_be_deleted_files)
     } catch (e) {
       console.log('Filter Image error: ' + e)
+      return res.status(500).send("Could not get image data")
     }
 
     function sleep(ms: number) {
