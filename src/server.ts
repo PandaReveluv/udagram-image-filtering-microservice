@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
@@ -31,21 +31,21 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   //! END @TODO1
 
-  app.get("/filteredimage", async (req, res) => {
-    let image_url;
+  app.get("/filteredimage", async (req: Request, res: Response) => {
+    let image_url: string
     // validate the image url
     try {
       if (typeof req.query['image_url'] === 'undefined' || req.query['image_url'].toString().trim().length === 0) {
         return res.status(422).send("Missing Image URL")
       }
-      image_url = new URL(req.query['image_url'].toString())
+      image_url = new URL(req.query['image_url'].toString()).href
     } catch {
       return res.status(422).send("Invalid Image URL")
     }
 
     // start filter image process, then delete the filtered file
     try {
-      let filtered_image = await filterImageFromURL(image_url.href)
+      let filtered_image = await filterImageFromURL(image_url)
       res.sendFile(filtered_image)
       // sleep for 3 second to wait for filter_image to be created
       await sleep(3000)
@@ -65,7 +65,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   // Root Endpoint
   // Displays a simple message to the user
-  app.get( "/", async ( req, res ) => {
+  app.get( "/", async ( req: Request, res: Response ) => {
     res.send("try GET /filteredimage?image_url={{}}")
   } );
   
