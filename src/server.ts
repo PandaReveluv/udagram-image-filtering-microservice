@@ -30,7 +30,38 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   /**************************************************************************** */
 
   //! END @TODO1
-  
+
+  app.get("/filteredimage", async (req, res) => {
+    let image_url;
+    // validate the image url
+    try {
+      if (typeof req.query['image_url'] === 'undefined' || req.query['image_url'].toString().trim().length === 0) {
+        return res.status(422).send("Missing Image URL")
+      }
+      image_url = new URL(req.query['image_url'].toString())
+    } catch {
+      return res.status(422).send("Invalid Image URL")
+    }
+
+    // start filter image process, then delete the filtered file
+    try {
+      let filtered_image = await filterImageFromURL(image_url.href)
+      res.sendFile(filtered_image)
+      // sleep for 3 second to wait for filter_image to be created
+      await sleep(3000)
+      let to_be_deleted_files = [filtered_image]
+      await deleteLocalFiles(to_be_deleted_files)
+    } catch (e) {
+      console.log('Filter Image error: ' + e)
+    }
+
+    function sleep(ms: number) {
+      return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
+    }
+  });
+
   // Root Endpoint
   // Displays a simple message to the user
   app.get( "/", async ( req, res ) => {
